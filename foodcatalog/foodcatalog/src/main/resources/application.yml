@@ -1,16 +1,17 @@
-
-    application:
-        name: FOOD-CATALOG-SERVICE
-    datasource:
-        url: jdbc:mysql://localhost:3306/foodcatalogdb
-        username: root
-        password: 12345
-        driver-class-name: com.mysql.cj.jdbc.Driver
-    jpa:
-        hibernate:
-            ddl-auto: update
-        show-sql: true
+spring:
+  application:
+    name: FOOD-CATALOG-SERVICE
+  profiles:
+    active: local
+  datasource:
+    url: jdbc:mysql://localhost:3306/foodcatalogdb
+    username: root
+    password: 12345
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
 
 server:
-    port: 9092
-
+  port: 9092

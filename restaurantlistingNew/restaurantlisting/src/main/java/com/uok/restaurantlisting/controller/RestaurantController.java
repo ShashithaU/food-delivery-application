@@ -3,6 +3,8 @@ package com.uok.restaurantlisting.controller;
 import com.uok.restaurantlisting.dto.RestaurantDTO;
 import com.uok.restaurantlisting.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.management.relation.RelationService;
@@ -16,9 +18,10 @@ public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    @GetMapping("/getAllRestaurants")
-    public List<RestaurantDTO> getAllRestaurants() {
-        return restaurantService.getAllRestaurants();
+    @GetMapping
+    public ResponseEntity<List<RestaurantDTO>> getAllRestaurants() {
+        List<RestaurantDTO> allRestaurants = restaurantService.getAllRestaurants();
+        return new ResponseEntity<>(allRestaurants, HttpStatus.OK);
     }
 
     @PostMapping("/addRestaurant")

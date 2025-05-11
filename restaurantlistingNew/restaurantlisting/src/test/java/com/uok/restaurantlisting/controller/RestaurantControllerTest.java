@@ -1,0 +1,55 @@
+package com.uok.restaurantlisting.controller;
+
+import com.uok.restaurantlisting.dto.RestaurantDTO;
+import com.uok.restaurantlisting.service.RestaurantService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+public class RestaurantControllerTest {
+
+    @InjectMocks
+    RestaurantController restaurantController;
+
+    @Mock
+    RestaurantService restaurantService;
+
+    @BeforeEach
+    public void setup(){
+        MockitoAnnotations.openMocks(this); // to Mock and InjectMock annotations to take effect , need to call MockitoAnnotations.openMocks(this);
+    }
+
+
+    @Test
+    public void testGetAllRestaurants(){
+        // Mock the service behavior
+        List<RestaurantDTO> mockRestaurants = Arrays.asList(
+                new RestaurantDTO(1, "Restaurant 1", "Address 1", "city 1", "Desc 1"),
+                new RestaurantDTO(2, "Restaurant 2", "Address 2", "city 2", "Desc 2")
+        );
+        when(restaurantService.getAllRestaurants()).thenReturn(mockRestaurants);
+
+        // Call the controller method
+        ResponseEntity<List<RestaurantDTO>> response = restaurantController.getAllRestaurants();
+
+        // Verify the response
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+         assertEquals(mockRestaurants, response.getBody());
+
+        // Verify that the service method was called
+        verify(restaurantService, times(1)).getAllRestaurants();
+    }
+
+    }
+
+
