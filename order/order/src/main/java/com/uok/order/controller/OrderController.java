@@ -17,8 +17,9 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/saveOrder")
-    public void saveOrder(@RequestBody OrderDTOFromFrontEnd orderDTOFromFrontEnd) {
-        orderService.saveOrder(orderDTOFromFrontEnd);
+    public OrderDTO saveOrder(@RequestBody OrderDTOFromFrontEnd orderDTOFromFrontEnd) {
+        return  orderService.saveOrder(orderDTOFromFrontEnd);
+
     }
 
 }

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: angularapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: angularapp
+  template:
+    metadata:
+      labels:
+        app: angularapp
+    spec:
+      containers:
+        - name: angular-app-container
+          image: codedecode25/food-delivery-app-fe:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          # Add resource limits
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+          # Add health checks
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: angular-service
+spec:
+  selector:
+    app: angularapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

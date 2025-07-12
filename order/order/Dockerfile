@@ -14,4 +14,5 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /opt
 COPY --from=build /app/target/*.jar /opt/app.jar
+EXPOSE 9094
 ENTRYPOINT ["java", "-jar", "app.jar"]

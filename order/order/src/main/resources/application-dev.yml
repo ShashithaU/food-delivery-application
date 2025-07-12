@@ -1,9 +1,5 @@
-
-eureka:
-  instance:
-    prefer-ip-address: true
-    hostname: eureka-0
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/    #http://localhost:8761/eureka/
-
+spring:
+  data:
+    mongodb:
+      uri: mongodb://mongodb-service:27017/orderdb
+      database: orderdb
