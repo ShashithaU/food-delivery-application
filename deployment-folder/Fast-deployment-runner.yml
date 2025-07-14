@@ -1,0 +1,92 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: deployment-runner
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      containers:
+      - name: deployer
+        image: bitnami/kubectl:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "🔧 Starting deployment..."
+          
+          echo "▶️  Apply Secrets and ConfigMaps"
+          kubectl apply -f /manifests/secret.yml
+          kubectl apply -f /manifests/configmap.yml
+
+          echo "📦 Deploy Databases"
+          kubectl apply -f /manifests/MySQL.yml
+          kubectl apply -f /manifests/MongoDB.yml
+
+          echo "🚫 Removing DB health checks temporarily"
+          kubectl patch deployment mysql --type='json' -p='[
+            {"op": "remove", "path": "/spec/template/spec/containers/0/livenessProbe"},
+            {"op": "remove", "path": "/spec/template/spec/containers/0/readinessProbe"}
+          ]' || true
+          kubectl patch deployment mongodb --type='json' -p='[
+            {"op": "remove", "path": "/spec/template/spec/containers/0/livenessProbe"},
+            {"op": "remove", "path": "/spec/template/spec/containers/0/readinessProbe"}
+          ]' || true
+
+          echo "⏳ Waiting for databases"
+          kubectl wait --for=condition=ready pod -l app=mysql --timeout=300s
+          kubectl wait --for=condition=ready pod -l app=mongodb --timeout=300s
+
+          echo "🔁 Deploy Eureka"
+          kubectl apply -f /manifests/eureka-manifest.yml
+          kubectl wait --for=condition=ready pod -l app=eureka --timeout=300s
+
+          echo "🚀 Deploy Microservices"
+          for svc in restaurant-manifest food-catalogue-manifest user-manifest order-manifest; do
+            kubectl apply -f /manifests/$svc.yml
+          done
+
+          echo "🩺 Removing health checks from microservices (temporarily)"
+          for app in restaurantapp foodcatalogueapp userapp orderapp; do
+            kubectl patch deployment $app --type='json' -p='[
+              {"op": "remove", "path": "/spec/template/spec/containers/0/livenessProbe"},
+              {"op": "remove", "path": "/spec/template/spec/containers/0/readinessProbe"}
+            ]' || true
+          done
+
+          sleep 20
+
+          echo "⏳ Wait for microservices"
+          for app in restaurantapp foodcatalogueapp userapp orderapp; do
+            kubectl wait --for=condition=ready pod -l app=$app --timeout=300s
+          done
+
+          echo "🌐 Deploy Frontend"
+          kubectl apply -f /manifests/angular-manifest.yml
+          kubectl wait --for=condition=ready pod -l app=angularapp --timeout=300s
+
+          echo "📊 Deploy Monitoring"
+          kubectl apply -f /manifests/prometheus.yml
+          kubectl apply -f /manifests/grafana.yml
+          kubectl wait --for=condition=ready pod -l app=prometheus --timeout=300s
+          kubectl wait --for=condition=ready pod -l app=grafana --timeout=300s
+
+          echo "🌐 Apply Ingress & Network Policies"
+          kubectl apply -f /manifests/ingress.yml
+          kubectl apply -f /manifests/network-policies.yml
+
+          echo "📈 Deploy HPA"
+          kubectl apply -f /manifests/hpa.yml
+
+          echo "✅ Deployment Complete"
+          kubectl get pods
+          kubectl get hpa
+          kubectl get networkpolicies
+        volumeMounts:
+        - name: manifests
+          mountPath: /manifests
+      restartPolicy: Never
+      volumes:
+      - name: manifests
+        configMap:
+          name: deployment-manifests

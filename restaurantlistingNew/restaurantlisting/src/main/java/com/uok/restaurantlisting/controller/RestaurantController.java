@@ -2,6 +2,7 @@ package com.uok.restaurantlisting.controller;
 
 import com.uok.restaurantlisting.dto.RestaurantDTO;
 import com.uok.restaurantlisting.service.RestaurantService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequestMapping("/restaurant")
 @RequiredArgsConstructor
 @CrossOrigin
+@Tag(name = "Restaurant Management")
 public class RestaurantController {
 
     private final RestaurantService restaurantService;

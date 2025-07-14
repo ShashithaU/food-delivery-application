@@ -8,6 +8,11 @@ data:
     CREATE DATABASE IF NOT EXISTS foodcataloguedb;
     CREATE DATABASE IF NOT EXISTS userdb;
     
+    -- The root user is created by the MYSQL_ROOT_PASSWORD env var.
+    -- This command allows that user to connect from any host ('%').
+    GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+    FLUSH PRIVILEGES;
+    
     USE restaurantdb;
     -- Add any initial data for restaurant db
     
@@ -49,16 +54,6 @@ spec:
         image: mysql:8.0
         env:
         - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: secret
-              key: mysql-password
-        - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: secret
-              key: mysql-username
-        - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: secret

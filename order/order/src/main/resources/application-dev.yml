@@ -1,5 +1,17 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-service:8761/eureka/  # Use K8s service name
+    enabled: false  # Disable for local testing
+
 spring:
   data:
     mongodb:
       uri: mongodb://mongodb-service:27017/orderdb
       database: orderdb
+      repositories:
+        enabled: true
+
+app:
+  userinfo:
+    enabled: true
