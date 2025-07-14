@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/foodcatalog")
+@RequestMapping("/foodCatalogue")
 @RequiredArgsConstructor
 @CrossOrigin
 public class FoodCatalogController {
@@ -28,6 +28,7 @@ public class FoodCatalogController {
 
     @GetMapping("/fetchRestaurantAndFoodItemsById/{id}")
     public ResponseEntity<FoodCatalogPage> fetchRestaurantDetailsByFoodMenu(@PathVariable Integer id) {
+        System.out.println("worked");
         FoodCatalogPage foodCatalogPage = foodItemsService.fetchFoodCataloguePageDetails(id);
         return new ResponseEntity<>(foodCatalogPage, HttpStatus.OK);
     }

@@ -10,7 +10,7 @@ import { API_URL_FC } from 'src/app/constants/url';
 })
 export class FoodItemService {
 
-    private apiUrl = API_URL_FC+'/foodcatalog/fetchRestaurantAndFoodItemsById/';
+    private apiUrl = API_URL_FC+'/foodCatalogue/fetchRestaurantAndFoodItemsById/';
 
     constructor(private http: HttpClient) { }
 

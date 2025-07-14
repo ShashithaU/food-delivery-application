@@ -1,4 +1,5 @@
 export interface FoodItem {
+    veg: any;
     id?: number;
     itemName?: string;
     itemDescription?: string;

@@ -6,6 +6,7 @@ import com.uok.order.dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -15,7 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 @Document("order")
 public class Order {
-    private Integer orederId;
+    @Id
+    private Integer orderId;
     private List<FoodItemsDTO> foodItemsList;
     private Restaurant restaurant;
     private UserDTO userDTO;

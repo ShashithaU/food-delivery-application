@@ -10,7 +10,7 @@ import { API_URL_RL } from 'src/app/constants/url';
 })
 export class RestaurantService {
 
-  private apiUrl = API_URL_RL+'/restaurants/getAllRestaurants'; 
+  private apiUrl = API_URL_RL+'/restaurant/fetchAllRestaurants'; 
 
   constructor(private http: HttpClient) { }
 

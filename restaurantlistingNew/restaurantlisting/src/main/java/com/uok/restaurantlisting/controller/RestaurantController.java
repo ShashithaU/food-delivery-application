@@ -11,14 +11,14 @@ import javax.management.relation.RelationService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/restaurants")
+@RequestMapping("/restaurant")
 @RequiredArgsConstructor
 @CrossOrigin
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
-    @GetMapping
+    @GetMapping("/fetchAllRestaurants")
     public ResponseEntity<List<RestaurantDTO>> getAllRestaurants() {
         List<RestaurantDTO> allRestaurants = restaurantService.getAllRestaurants();
         return new ResponseEntity<>(allRestaurants, HttpStatus.OK);
@@ -29,7 +29,7 @@ public class RestaurantController {
         restaurantService.addRestaurant(restaurantDTO);
     }
 
-    @GetMapping("/getRestaurantById/{id}")
+    @GetMapping("/fetchById/{id}")
     public RestaurantDTO getRestaurantById(@PathVariable Long id) {
         return restaurantService.getRestaurantById(id);
     }
